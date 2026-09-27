@@ -17,7 +17,7 @@ Four independent Helldivers 2 mods that tune weapon damage, accuracy, handling, 
 2. Enable the mod or mods you want to use. Each package works independently, so you can choose any combination.
 3. Keep Bingus Shared Loader last at its default priority.
 4. In Arsenal, run Purge and Deploy, then start Helldivers 2.
-5. After loading onto the ship, allow up to about a minute for the mods to initialize before testing them in a mission.
+5. After loading onto the ship, allow up to about 2 minutes for the mods to initialize before testing them in a mission.
 
 The packages target Steam build 25480438. Flag Damage and AR-11 require Bingus Shared Loader v17 or newer. See each release and ZIP README for details, compatibility, and logs.
 
