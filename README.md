@@ -1,6 +1,6 @@
 # Super Earth Arsenal Pack
 
-Five independent Helldivers 2 mods that tune weapon damage, accuracy, handling, or ammunition. Choose only the packages you want; each has its own ZIP and can be enabled separately. The Sterilizer package also changes shared Gas values used by other gas sources, as explained in its listing.
+Six independent Helldivers 2 mods that tune weapon damage, accuracy, handling, or ammunition. Choose only the packages you want; each has its own ZIP and can be enabled separately. The Sterilizer package also changes shared Gas values used by other gas sources, as explained in its listing.
 
 **These mods are vibecoded:** they were made with AI coding assistance and iterative hands-on development.
 
@@ -11,6 +11,7 @@ Five independent Helldivers 2 mods that tune weapon damage, accuracy, handling, 
 - [AR-11 Arbitrator — Tuned v0.2 release](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/releases/tag/ar11-arbitrator-v0.2) · [Download ZIP](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/raw/refs/heads/main/mods/AR-11-Arbitrator-Tuned-v0.2.zip): sets rifle damage to 80, magazine capacity to 65 rounds, underbarrel spare ammo to 30, and ergonomics to 40 with the default optic. In-game use is confirmed, including against a Brood Commander.
 - [R/40-K Hot-Shot — Magazine Tuning v0.8 release](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/releases/tag/r40-k-hot-shot-v0.8) · [Download ZIP](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/raw/refs/heads/main/mods/R40-K-Hot-Shot-v0.8-Magazine-Tuning.zip): changes magazine capacity from 12 to 20 rounds and ergonomics from 30 to 45. Starting magazines, resupply refill, and maximum magazines are each 5. It keeps stock magazine reloads; no heat mechanics are added. In-game use is confirmed.
 - [TX-41 Sterilizer — Armor Control v0.7 release](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/releases/tag/tx-41-sterilizer-armor-control-v0.7) · [Download ZIP](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/raw/refs/heads/main/mods/TX-41-Sterilizer-Armor-Control-v0.7.zip): adds a 6-second Acid Storm armor-reduction effect, raises Gas MKII damage to 45 DPS, increases the magazine from 125 to 175 rounds, and raises gas/confusion buildup from 0.5 to 0.75. Shared-effects disclosure: Gas MKII is also used by AX/TX-13 Guard Dog Dog Breath, so it also reaches 45 DPS. The Helldiver Gas multiplier changes from 1.3 to 0.7333, reducing damage from all Gas sources against Helldivers, including gas grenades and gas hazards; this does not increase gas-grenade damage to enemies. The shared 6-second Acid Storm duration also affects Acid Storm weather once they clear out. The launch log reports that the changes applied; mission balance still needs confirmation.
+- [ARC-3 Rapid Arc Thrower v0.7 release](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/releases/tag/arc-3-rapid-arc-thrower-v0.7) · [Download ZIP](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Pack/raw/refs/heads/main/mods/ARC-3-Rapid-Arc-Thrower-v0.7.zip): turns the ARC-3 into rapid, closely spaced arc pulses with 0.20-second minimum charge, 40 m primary reach, 163/65 normal/durable damage, reduced stun buildup, and softer camera climb. Use Bingus Arc Thrower Revamped for hold-to-fire. The user confirmed v0.7 feels right in-game and the launch log reports Applied.
 
 ## Install
 
@@ -20,4 +21,4 @@ Five independent Helldivers 2 mods that tune weapon damage, accuracy, handling, 
 4. In Arsenal, run Purge and Deploy, then start Helldivers 2.
 5. After loading onto the ship, allow up to about 2 minutes for the mods to initialize before testing them in a mission.
 
-The packages target Steam build 25480438. Flag Damage and AR-11 require Bingus Shared Loader v17 or newer; Sterilizer requires v18 or newer. See each release and ZIP README for details, compatibility, and logs.
+The packages target Steam build 25480438. Flag Damage and AR-11 require Bingus Shared Loader v17 or newer; Sterilizer and ARC-3 require v18 or newer. See each release and ZIP README for details, compatibility, and logs.
