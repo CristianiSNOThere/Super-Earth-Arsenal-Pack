@@ -1,4 +1,3 @@
--- HD2-Addon: mods/codex/sai_focus_precision
 local make_api=(function()
 return function()
     local ffi = require('ffi')
@@ -76,8 +75,8 @@ return function()
         end
         return true
     end
-    function api.write_attachment(p,s)
-        assert(#s==8,'Only the two spread floats may be written')
+    function api.write_protected(p,s)
+        assert(#s==4 or #s==8,'Only validated 4-byte or 8-byte data edits may be written')
         local info=ffi.new('SaiFocusMemoryInfoV1[1]')
         if k.VirtualQuery(p,ffi.cast('void *',info),ffi.sizeof(info[0]))~=ffi.sizeof(info[0]) then return false end
         if not api.data_access(p,#s) or api.distance(p,info[0].base)+#s>tonumber(info[0].size) then return false end
@@ -130,7 +129,6 @@ return function()
     local function u32(s,o) local a,c,d,e=s:byte(o+1,o+4);return a+c*256+d*65536+e*16777216 end
     function api.private_regions(include_readonly)
         local regions={}
-        local allocations={}
         local info=ffi.new('SaiFocusMemoryInfoV1[1]')
         local cursor=ffi.cast('uint8_t *',65536)
         while ffi.cast('uintptr_t',cursor)<0x800000000000 do
@@ -139,21 +137,7 @@ return function()
             local next_address=ffi.cast('uint8_t *',info[0].base)+size
             assert(size>0 and next_address>cursor,'Invalid memory-region layout')
             if info[0].state==0x1000 and info[0].kind==0x20000 and (info[0].protection==4 or (include_readonly and info[0].protection==2)) then
-                local allocation=ffi.cast('uint8_t *',info[0].allocation)
-                local identity=api.identity(allocation)
-                if allocations[identity]==nil then
-                    local head=identity>=0x80000000 and api.read(allocation,32) or nil
-                    local eligible=false
-                    if head then
-                        for offset=0,12,4 do
-                            if head:sub(offset+1,offset+4)=='LDLD' and u32(head,offset+4)==1 then eligible=true;break end
-                        end
-                    end
-                    allocations[identity]=eligible
-                end
-                if allocations[identity] then
-                    regions[#regions+1]={base=ffi.cast('uint8_t *',info[0].base),size=size}
-                end
+                regions[#regions+1]={base=ffi.cast('uint8_t *',info[0].base),size=size}
             end
             cursor=next_address
             if api.checkpoint then api.checkpoint('Enumerating writable private data') end
@@ -193,15 +177,53 @@ return function()
         end
         return result
     end
-    function api.candidates(module,signature,row_offset,header)
-        if not header then
-            local slot=ffi.cast('uint8_t *',module)+0x348e1f8
-            local target=api.pointer(api.read(slot,8),0)
-            local head=target and api.read(target,16)
-            if head and u32(head,0)==2 and head:sub(5,8)=='LDLD' and u32(head,12)==3943969754 then
-                return {target}
+    function api.scan_private_many(patterns,include_readonly)
+        assert(type(patterns)=='table' and #patterns>0 and #patterns<=8,'Invalid multi-signature scan')
+        local regions=api.private_regions(include_readonly)
+        local total,scanned=0,0
+        local results,seen={},{}
+        local max_signature=0
+        for i,pattern in ipairs(patterns) do
+            assert(type(pattern.signature)=='string' and #pattern.signature>=8 and #pattern.signature<=256,'Invalid data signature')
+            assert(type(pattern.row_offset)=='number' and pattern.row_offset>=0,'Invalid record offset')
+            results[i],seen[i]={},{}
+            max_signature=math.max(max_signature,#pattern.signature)
+        end
+        for _,region in ipairs(regions) do total=total+region.size end
+        assert(total<=8589934592,'Private-data scan exceeds 8 GiB bounds. No edit applied.')
+        for _,region in ipairs(regions) do
+            local tail=''
+            for offset=0,region.size-1,65536 do
+                local length=math.min(65536,region.size-offset)
+                local data=api.read(region.base+offset,length)
+                if data then
+                    local block=tail..data
+                    for i,pattern in ipairs(patterns) do
+                        local from=1
+                        while true do
+                            local at=block:find(pattern.signature,from,true)
+                            if not at then break end
+                            local address=region.base+offset-#tail+at-1-pattern.row_offset
+                            local key=api.identity(address)
+                            if not seen[i][key] then
+                                seen[i][key]=true
+                                results[i][#results[i]+1]=address
+                            end
+                            from=at+1
+                        end
+                    end
+                    tail=block:sub(-(max_signature-1))
+                else tail='' end
+                scanned=scanned+length
+                local matches=0
+                for i=1,#results do matches=matches+#results[i] end
+                if api.progress then api.progress(scanned,total,matches) end
+                if api.checkpoint then api.checkpoint('Searching private data for Sterilizer records') end
             end
         end
+        return results
+    end
+    function api.candidates(module,signature,row_offset,header)
         local base=ffi.cast('uint8_t *',module)
         local dos=assert(api.read(base,64),'Cannot read module header')
         assert(dos:sub(1,2)=='MZ','Unexpected module header')
@@ -260,12 +282,14 @@ return function()
     if runtime_jit and runtime_jit.off then
         runtime_jit.off(api.private_regions,true)
         runtime_jit.off(api.scan_private,true)
+        runtime_jit.off(api.scan_private_many,true)
     end
     return api
 end
 
 end)()
-local patch=(function()
+local validate=(function()
+
 local patch={}
 local function u32(s,o)
     if not s or o<0 or o+4>#s then return nil end
@@ -423,90 +447,43 @@ function patch.apply(api,module)
     end)
     return ok,tostring(result)
 end
-return patch
-
+return damage
 end)()
-local start=(function()
-return function(make_api,patch)
-    if rawget(_G,'SaiFocusModV1') then return end
-    local state={version='0.5',active=false,status='Waiting for first game update',scanned=0,candidates=0,diagnostics={}}
-    _G.SaiFocusModV1=state
-    local previous=update
-    local callback
-    local function log()
-        pcall(function()
-            local logger=rawget(_G,'CowboyBingusModLoader')
-            local file=logger and logger.open_log and logger.open_log('SaiFocusMod.log')
-            if file then
-                file:write('SaiFocusMod v0.5 FOCUS LENS PRECISION / 90 NORMAL / 21 DURABLE\nstatus='..state.status..'\nscanned_bytes='..state.scanned..'\ncandidates='..state.candidates..'\n'..table.concat(state.diagnostics,'\n')..'\n')
-                file:close()
-            end
-        end)
+local path=[====[C:/Users/crife/Desktop/HD2 Mods/work/flag-mod/filediver-master/datalibrary/generated_damage_settings.dl_bin]====]
+local status09=[====[Applied: ARC-3 range 55 -> 40 m; charge 1.0/1.1/1.2 -> 0.20/0.22/0.24 s; damage 250/100 -> 163/65; Stun Medium buildup 8 -> 0.8; demolition/force strength/impulse 20/35/10 -> 4/25/2; camera climb 1.0/1.0 -> 0.4/0.4.]====]
+local status10=[====[Applied: ARC-3 range 55 -> 45 m; charge 1.0/1.1/1.2 -> 0.307692/0.338462/0.369231 s; damage 250/100 -> 226/90; Stun Medium buildup 8 -> 0.8; demolition/force strength/impulse 20/35/10 -> 4/25/2; camera climb 1.0/1.0 -> 0.4/0.4.]====]
+
+local ffi=require('ffi')
+local f=assert(io.open(path,'rb'));local original=f:read('*a');f:close()
+local function case(version,status,n,d,reject,offset,extra)
+    _G.FlagDamagePrototypeV1=nil;_G.SaiFocusModV1=nil;_G.AR11ArbitratorModV1=nil;_G.RapidArcThrowerV1=nil
+    local api=make_api();local hold=ffi.new('uint8_t[?]',#original);ffi.copy(hold,original,#original)
+    local p=ffi.cast('uint8_t *',hold)
+    ffi.cast('uintptr_t *',p+84)[0]=ffi.cast('uintptr_t',p+100)
+    local function put(o,v) ffi.cast('uint32_t *',p+o)[0]=v end
+    if version then
+        _G.RapidArcThrowerV1={active=true,version=version,status=status}
+        put(15076,n);put(15080,d);put(15100,4);put(15104,25);put(15108,2)
+        ffi.cast('float *',p+15120)[0]=0.8
     end
-    local deadline=0
-    local logged_mb=-1
-    local worker=coroutine.create(function()
-            local api=make_api()
-            api.note=function(message)
-                if #state.diagnostics>=12 then table.remove(state.diagnostics,1) end
-                state.diagnostics[#state.diagnostics+1]='validation='..message
-            end
-            api.checkpoint=function(stage,force)
-                state.status=stage
-                if force or os.clock()>=deadline then coroutine.yield() end
-            end
-            api.progress=function(scanned,total,candidates)
-                state.scanned,state.candidates=scanned,candidates
-                local mb=math.floor(scanned/16777216)
-                if mb~=logged_mb then logged_mb=mb;log() end
-            end
-            local exe,game=api.module(nil),api.module('game.dll')
-            assert(exe~=nil and game~=nil,'Game modules unavailable')
-            assert(api.module_hash(exe)=='F5FEE03DCFDB2E553A4752C283590950AC13316B376D8196AA556FF0400D5F06','Unsupported executable. No edit applied.')
-            assert(api.module_hash(game)=='2E2C3B7C2500646DADD5F2B4C6E0504DBB7E7896139F64CDDC0D1813C718F51E','Unsupported game module. No edit applied.')
-            local function wait_for_loading(milliseconds,attempt)
-                if not api.now then return end
-                state.status='Waiting for game data to load; attempt '..attempt..'/8'
-                log()
-                local until_time=api.now()+milliseconds
-                repeat coroutine.yield() until api.now()>=until_time
-            end
-            for attempt=1,8 do
-                if attempt==1 then wait_for_loading(15000,attempt) end
-                local applied,reason=patch.apply(api,game)
-                if applied then return reason end
-                local not_ready=reason:find('found 0. No edit applied.',1,true)~=nil
-                local stale=reason:find('Data changed before edit. No edit applied.',1,true)~=nil
-                local restored_conflict=reason:find('Full table verification failed',1,true)~=nil
-                    and reason:find('restored=true',1,true)~=nil
-                if not not_ready and not stale and not restored_conflict or attempt==8 then error(reason) end
-                local retry_conflict=stale or restored_conflict
-                state.status=retry_conflict
-                    and 'Shared table changed during SAI setup; retrying safely'
-                    or 'Damage table not ready; retrying after loading'
-                log()
-                wait_for_loading(retry_conflict and 3000 or 10000,attempt)
-            end
-    end)
-    local function init()
-        if coroutine.status(worker)=='dead' then return end
-        deadline=os.clock()+0.0007
-        local ok,message=coroutine.resume(worker)
-        if not ok or coroutine.status(worker)=='dead' then
-            state.active,state.status=ok,tostring(message)
-            print('[SaiFocusMod] '..state.status)
-            log()
-            if update==callback then update=previous or function() end end
-        end
-    end
-    local function finish(...) init();return ... end
-    callback=function(...)
-        if previous then return finish(previous(...)) end
-        init()
-    end
-    update=callback
-    log()
+    if offset then p[offset]=bit.bxor(p[offset],1) end
+    if extra then extra(put) end
+    local before=api.read(p,#original)
+    local ok,result,reason=pcall(validate,api,p)
+    assert((ok and result~=nil)==not reject,tostring(version)..': '..tostring(result)..' '..tostring(reason))
+    assert(api.read(p,#original)==before,'validator mutated fixture')
 end
-
-end)()
-start(make_api,patch)
+case(nil,nil,nil,nil,false)
+case('0.9',status09,163,65,false)
+case('0.10',status10,226,90,false)
+case('0.11',status10,226,90,true)
+case('0.10',status09,226,90,true)
+case('0.10',status10,163,65,true)
+case('0.9',status09,226,90,true)
+for _,o in ipairs({15072,15084,15100,15104,15108,15116,15120,10000}) do case('0.10',status10,226,90,true,o) end
+case('0.10',status10,226,90,false,nil,function(put)
+    _G.FlagDamagePrototypeV1={active=true,status='Applied: flag damage 200 -> 300; durable damage 100 -> 150.'}
+    put(41980,300);put(41984,150)
+    _G.AR11ArbitratorModV1={active=true,version='0.2',status='Applied: AR-11 rifle damage 70 -> 80; rifle magazine 45 -> 65; underbarrel magazine remains 4 and reserve ammo 20 -> 30; stagger 20 -> 25 with push force 20 unchanged; ergonomics 29 -> 40 with the default optic.'}
+    put(10592,80);put(12672,25)
+end)

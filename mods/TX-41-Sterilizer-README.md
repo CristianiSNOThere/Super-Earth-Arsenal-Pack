@@ -6,7 +6,7 @@ Applies the Acid Storm armor-reduction status with spray hits for 6 seconds. Set
 
 ## Controls and compatibility
 
-Acid Storm temporarily reduces armor effectiveness. Gas MKII is shared with AX/TX-13 Guard Dog Dog Breath, which also deals 45 DPS. The Helldiver multiplier reduces incoming damage from all Gas sources, including grenades and hazards. The shared Acid Storm duration also affects weather status after the storm ends. Compatible with ARC-3 Rapid Arc Thrower.
+Acid Storm temporarily reduces armor effectiveness. Gas MKII is shared with AX/TX-13 Guard Dog Dog Breath, which also deals 45 DPS. The Helldiver multiplier reduces incoming damage from all Gas sources, including grenades and hazards. The shared Acid Storm duration also affects weather status after the storm ends. Compatible with ARC-3 Rapid Arc Thrower v0.9 and v0.10.
 
 ## Install
 

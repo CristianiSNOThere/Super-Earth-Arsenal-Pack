@@ -6,7 +6,7 @@ Sets LAS-12 SAI normal damage to 90 and durable damage to 21 with any lens. Sets
 
 ## Controls and compatibility
 
-Equip the Focus Lens for the precision spread. Compatible with the supported shared damage-table edits from One True Flag, AR-11 Arbitrator, and ARC-3 Rapid Arc Thrower.
+Equip the Focus Lens for the precision spread. Compatible with the supported shared damage-table edits from One True Flag, AR-11 Arbitrator, and ARC-3 Rapid Arc Thrower v0.9 and v0.10.
 
 ## Install
 

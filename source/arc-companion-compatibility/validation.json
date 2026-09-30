@@ -1,0 +1,43 @@
+{
+  "result": "passed",
+  "gameplay_verified": false,
+  "installed": false,
+  "published": false,
+  "tests": [
+    "Actual shipped LuaJIT validators: stock and ARC v0.9/v0.10",
+    "ARC before SAI and Sterilizer with supported Flag/AR11/SAI peers",
+    "Unknown version/status and mismatched balance rejected",
+    "Identity/status/force/buildup/unrelated full-table edits rejected",
+    "Validator fixtures unchanged",
+    "All unrelated resource envelopes and gameplay settings preserved",
+    "Manifest GUIDs and option identities preserved",
+    "ZIP/resource roundtrip"
+  ],
+  "packages": [
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\releases\\compatibility-fix-20260930\\Super-Earth-Arsenal-Modpack-v1.0.8.zip",
+      "sha256": "C19065409052CF192E3E0D874E527BC16D56BBAADE30DC8C9E5303227FA17124",
+      "changed_resources": [
+        "e54e34210bac937e",
+        "8ba5fd7bc87570d8"
+      ],
+      "resources": 25
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\releases\\compatibility-fix-20260930\\TX-41-Sterilizer-v0.10.zip",
+      "sha256": "A75C2AFC28E2E5D7248F7C79835D3C96A0E755D7A017CA437F9E13F50DF9F11A",
+      "changed_resources": [
+        "e54e34210bac937e"
+      ],
+      "resources": 1
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\releases\\compatibility-fix-20260930\\SAI-Focus-Precision-v0.7.zip",
+      "sha256": "440C7D44185FB585E883151BB1196213EE8861C013A62EDE4D7DDA422303CF01",
+      "changed_resources": [
+        "8ba5fd7bc87570d8"
+      ],
+      "resources": 1
+    }
+  ]
+}

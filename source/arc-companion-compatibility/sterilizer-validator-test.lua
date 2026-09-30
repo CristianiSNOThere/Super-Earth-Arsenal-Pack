@@ -1,4 +1,3 @@
--- HD2-Addon: mods/codex/sterilizer_armor_control
 local make_api=(function()
 return function()
     local ffi = require('ffi')
@@ -46,36 +45,6 @@ return function()
         local buf,got=ffi.new('uint8_t[?]',n),ffi.new('size_t[1]')
         if k.ReadProcessMemory(self,p,buf,n,got)==0 or tonumber(got[0])~=n then return nil end
         return ffi.string(buf,n)
-    end
-    function api.record_candidates(module)
-        local function u32(s,o)
-            if not s or #s < o+4 then return nil end
-            local a,b,c,d=s:byte(o+1,o+4)
-            return a+b*256+c*65536+d*16777216
-        end
-        local base=ffi.cast('uint8_t *',module)
-        local owner=assert(api.pointer(api.read(base+0x346bf98,8),0),'Entity owner pointer unavailable')
-        local map=assert(api.pointer(api.read(owner+0xf12bd8,8),0),'Entity source table unavailable')
-        local entities=map-26151684
-        local magazine,health=entities+576052,entities+9520532
-        local status={}
-        local seen={}
-        for _,region in ipairs(api.private_regions(true)) do
-            local head=api.read(region.base,56)
-            if head then
-                for offset=0,12,4 do
-                    if head:sub(offset+1,offset+4)=='LDLD' and u32(head,offset+4)==1
-                      and u32(head,offset+8)==0xc63e0b22 and u32(head,offset+12)==11888 then
-                        local address=region.base+offset+8248
-                        if u32(api.read(address,4),0)==55 and not seen[api.identity(address)] then
-                            seen[api.identity(address)]=true;status[#status+1]=address
-                        end
-                    end
-                end
-            end
-            if api.checkpoint then api.checkpoint('Resolving status allocation header') end
-        end
-        return {{magazine},status,{health}}
     end
     function api.writable(p,n)
         local info=ffi.new('SaiFocusMemoryInfoV1[1]')
@@ -160,7 +129,6 @@ return function()
     local function u32(s,o) local a,c,d,e=s:byte(o+1,o+4);return a+c*256+d*65536+e*16777216 end
     function api.private_regions(include_readonly)
         local regions={}
-        local allocations={}
         local info=ffi.new('SaiFocusMemoryInfoV1[1]')
         local cursor=ffi.cast('uint8_t *',65536)
         while ffi.cast('uintptr_t',cursor)<0x800000000000 do
@@ -169,21 +137,7 @@ return function()
             local next_address=ffi.cast('uint8_t *',info[0].base)+size
             assert(size>0 and next_address>cursor,'Invalid memory-region layout')
             if info[0].state==0x1000 and info[0].kind==0x20000 and (info[0].protection==4 or (include_readonly and info[0].protection==2)) then
-                local allocation=ffi.cast('uint8_t *',info[0].allocation)
-                local identity=api.identity(allocation)
-                if allocations[identity]==nil then
-                    local head=identity>=0x80000000 and api.read(allocation,32) or nil
-                    local eligible=false
-                    if head then
-                        for offset=0,12,4 do
-                            if head:sub(offset+1,offset+4)=='LDLD' and u32(head,offset+4)==1 then eligible=true;break end
-                        end
-                    end
-                    allocations[identity]=eligible
-                end
-                if allocations[identity] then
-                    regions[#regions+1]={base=ffi.cast('uint8_t *',info[0].base),size=size}
-                end
+                regions[#regions+1]={base=ffi.cast('uint8_t *',info[0].base),size=size}
             end
             cursor=next_address
             if api.checkpoint then api.checkpoint('Enumerating writable private data') end
@@ -270,14 +224,6 @@ return function()
         return results
     end
     function api.candidates(module,signature,row_offset,header)
-        if not header then
-            local slot=ffi.cast('uint8_t *',module)+0x348e1f8
-            local target=api.pointer(api.read(slot,8),0)
-            local head=target and api.read(target,16)
-            if head and u32(head,0)==2 and head:sub(5,8)=='LDLD' and u32(head,12)==3943969754 then
-                return {target}
-            end
-        end
         local base=ffi.cast('uint8_t *',module)
         local dos=assert(api.read(base,64),'Cannot read module header')
         assert(dos:sub(1,2)=='MZ','Unexpected module header')
@@ -342,7 +288,8 @@ return function()
 end
 
 end)()
-local patch=(function()
+local validate=(function()
+
 local patch = {}
 
 local DAMAGE_SIZE, DAMAGE_ROWS, DAMAGE_STRIDE = 49424, 649, 76
@@ -611,96 +558,44 @@ function patch.apply(api,module)
     return ok,tostring(result)
 end
 
-return patch
-
+return validate_damage
 end)()
-local start=(function()
-return function(make_api,patch)
-    if rawget(_G,'SterilizerArmorControlV1') then return end
-    local state={version='0.8',active=false,status='Waiting for first game update',scanned=0,candidates=0,diagnostics={}}
-    _G.SterilizerArmorControlV1=state
-    local previous=update
-    local callback
-    local function log()
-        pcall(function()
-            local logger=rawget(_G,'CowboyBingusModLoader')
-            local file=logger and logger.open_log and logger.open_log('SterilizerArmorControl.log')
-            if file then
-                file:write('SterilizerArmorControl v0.8\nstatus='..state.status..'\nscanned_bytes='..state.scanned..'\ncandidates='..state.candidates..'\n'..table.concat(state.diagnostics,'\n')..'\n')
-                file:close()
-            end
-        end)
-    end
-    local deadline=0
-    local logged_mb=-1
-    local worker=coroutine.create(function()
-        local api=make_api()
-        api.note=function(message)
-            if #state.diagnostics>=16 then table.remove(state.diagnostics,1) end
-            state.diagnostics[#state.diagnostics+1]='validation='..message
-        end
-        api.checkpoint=function(stage,force)
-            state.status=stage
-            if force or os.clock()>=deadline then coroutine.yield() end
-        end
-        api.progress=function(scanned,total,candidates)
-            state.scanned,state.candidates=scanned,candidates
-            local mb=math.floor(scanned/16777216)
-            if mb~=logged_mb then logged_mb=mb;log() end
-        end
-        local exe,game=api.module(nil),api.module('game.dll')
-        assert(exe~=nil and game~=nil,'Game modules unavailable')
-        assert(api.module_hash(exe)=='F5FEE03DCFDB2E553A4752C283590950AC13316B376D8196AA556FF0400D5F06','Unsupported executable. No edit applied.')
-        assert(api.module_hash(game)=='2E2C3B7C2500646DADD5F2B4C6E0504DBB7E7896139F64CDDC0D1813C718F51E','Unsupported game module. No edit applied.')
+local path=[====[C:/Users/crife/Desktop/HD2 Mods/work/flag-mod/filediver-master/datalibrary/generated_damage_settings.dl_bin]====]
+local status09=[====[Applied: ARC-3 range 55 -> 40 m; charge 1.0/1.1/1.2 -> 0.20/0.22/0.24 s; damage 250/100 -> 163/65; Stun Medium buildup 8 -> 0.8; demolition/force strength/impulse 20/35/10 -> 4/25/2; camera climb 1.0/1.0 -> 0.4/0.4.]====]
+local status10=[====[Applied: ARC-3 range 55 -> 45 m; charge 1.0/1.1/1.2 -> 0.307692/0.338462/0.369231 s; damage 250/100 -> 226/90; Stun Medium buildup 8 -> 0.8; demolition/force strength/impulse 20/35/10 -> 4/25/2; camera climb 1.0/1.0 -> 0.4/0.4.]====]
 
-        state.status='Waiting for game data and companion mods to initialize'
-        log()
-        local ready_at=api.now()+30000
-        repeat coroutine.yield() until api.now()>=ready_at
-        local peer_deadline=api.now()+120000
-        while true do
-            local flag=rawget(_G,'FlagDamagePrototypeV1')
-            local sai=rawget(_G,'SaiFocusModV1')
-            local ar11=rawget(_G,'AR11ArbitratorModV1')
-            local arc=rawget(_G,'RapidArcThrowerV1')
-            local pending=(flag and not flag.active) or (sai and not sai.active)
-                or (ar11 and not ar11.active) or (arc and not arc.active)
-            if not pending then break end
-            assert(api.now()<peer_deadline,'An installed optional companion mod did not finish initialization. No edit applied.')
-            state.status='Waiting for optional Flag/SAI/AR-11/ARC-3 table edits'
-            coroutine.yield()
-        end
-
-        for attempt=1,6 do
-            state.status='Validating Sterilizer data; attempt '..attempt..'/6'
-            log()
-            local applied,reason=patch.apply(api,game)
-            if applied then return reason end
-            if not reason:find('found 0. No edit applied.',1,true) or attempt==6 then error(reason) end
-            state.status='Sterilizer data not ready; retrying after loading'
-            local until_time=api.now()+10000
-            repeat coroutine.yield() until api.now()>=until_time
-        end
-    end)
-    local function init()
-        if coroutine.status(worker)=='dead' then return end
-        deadline=os.clock()+0.0007
-        local ok,message=coroutine.resume(worker)
-        if not ok or coroutine.status(worker)=='dead' then
-            state.active,state.status=ok,tostring(message)
-            print('[SterilizerArmorControl] '..state.status)
-            log()
-            if update==callback then update=previous or function() end end
-        end
+local ffi=require('ffi')
+local f=assert(io.open(path,'rb'));local original=f:read('*a');f:close()
+local function case(version,status,n,d,reject,offset,extra)
+    _G.FlagDamagePrototypeV1=nil;_G.SaiFocusModV1=nil;_G.AR11ArbitratorModV1=nil;_G.RapidArcThrowerV1=nil
+    local api=make_api();local hold=ffi.new('uint8_t[?]',#original);ffi.copy(hold,original,#original)
+    local p=ffi.cast('uint8_t *',hold)
+    ffi.cast('uintptr_t *',p+84)[0]=ffi.cast('uintptr_t',p+100)
+    local function put(o,v) ffi.cast('uint32_t *',p+o)[0]=v end
+    if version then
+        _G.RapidArcThrowerV1={active=true,version=version,status=status}
+        put(15076,n);put(15080,d);put(15100,4);put(15104,25);put(15108,2)
+        ffi.cast('float *',p+15120)[0]=0.8
     end
-    local function finish(...) init();return ... end
-    callback=function(...)
-        if previous then return finish(previous(...)) end
-        init()
-    end
-    update=callback
-    log()
+    if offset then p[offset]=bit.bxor(p[offset],1) end
+    if extra then extra(put) end
+    local before=api.read(p,#original)
+    local ok,result,reason=pcall(validate,api,p)
+    assert((ok and result~=nil)==not reject,tostring(version)..': '..tostring(result)..' '..tostring(reason))
+    assert(api.read(p,#original)==before,'validator mutated fixture')
 end
-
-end)()
-start(make_api,patch)
+case(nil,nil,nil,nil,false)
+case('0.9',status09,163,65,false)
+case('0.10',status10,226,90,false)
+case('0.11',status10,226,90,true)
+case('0.10',status09,226,90,true)
+case('0.10',status10,163,65,true)
+case('0.9',status09,226,90,true)
+for _,o in ipairs({15072,15084,15100,15104,15108,15116,15120,10000}) do case('0.10',status10,226,90,true,o) end
+case('0.10',status10,226,90,false,nil,function(put)
+    _G.FlagDamagePrototypeV1={active=true,status='Applied: flag damage 200 -> 300; durable damage 100 -> 150.'}
+    put(41980,300);put(41984,150)
+    _G.AR11ArbitratorModV1={active=true,version='0.2',status='Applied: AR-11 rifle damage 70 -> 80; rifle magazine 45 -> 65; underbarrel magazine remains 4 and reserve ammo 20 -> 30; stagger 20 -> 25 with push force 20 unchanged; ergonomics 29 -> 40 with the default optic.'}
+    put(10592,80);put(12672,25)
+_G.SaiFocusModV1={active=true,status='Applied: SAI normal damage 80 -> 90; durable damage 4 -> 21; Focus Lens spread 75 -> 0.5 MRAD on both axes.'};put(4208,90);put(4212,21)
+end)
