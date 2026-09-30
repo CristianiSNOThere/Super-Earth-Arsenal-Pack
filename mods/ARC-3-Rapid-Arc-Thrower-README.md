@@ -7,5 +7,3 @@ Compared with v0.9, all three charge times are divided by 0.65 for a nominal 35%
 Enable Arc Thrower Revamped in CowboyBingus's Vanilla Plus Megapack for hold-to-fire. This package preserves its supported auto-fire flag. Requires Bingus Shared Loader v18+ and Steam build 25480438.
 
 Replace the previous individual package in Arsenal, Purge/Deploy, and restart Helldivers 2. Use the individual packages or the modpack to avoid duplicate addon resources.
-
-User confirmed the revised balance in a mission on 30 September 2026.

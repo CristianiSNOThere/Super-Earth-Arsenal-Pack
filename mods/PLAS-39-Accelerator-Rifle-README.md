@@ -19,4 +19,4 @@ Requires Helldivers 2 Steam build 25480438 and Bingus Shared Loader v15 or newer
 Startup discovery limits work per frame and searches game data libraries. Weapon and sentry tuning waits for installed companion mods to finish initializing.
 
 
-Semi and Burst now apply independently to each active rifle, including after switching weapons. Semi synchronizes its firing interval to 0.30 seconds. Burst fires three rounds and consumes three rounds. User confirmed the firing-mode and cadence fixes in a mission on 30 September 2026.
+Semi and Burst now apply independently to each active rifle, including after switching weapons. Semi synchronizes its firing interval to 0.30 seconds. Burst fires three rounds and consumes three rounds.

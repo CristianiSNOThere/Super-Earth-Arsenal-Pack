@@ -9,6 +9,3 @@ Reduces horizontal/vertical recoil drift from 20 to 15, horizontal camera recoil
 ## Install
 
 Import the ZIP into Arsenal and enable PLAS-1 Scorcher AR. Keep Bingus Shared Loader at its documented priority, Purge and Deploy, then restart Helldivers 2. Requires Steam build 25480438 and Bingus Shared Loader v15 or newer. Choose this individual package or Super-Earth Arsenal Modpack v1.0.7, which includes it, to avoid duplicate addon resources. Startup uses a dedicated runtime with the same discovery logic and companion initialization guards as the weapon tuning mods. Conflicting edits prevent the settings from applying.
-
-
-User confirmed the 540 RPM change in a mission on 30 September 2026.
