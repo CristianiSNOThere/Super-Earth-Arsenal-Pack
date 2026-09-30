@@ -1,0 +1,11 @@
+# S-11 Speargun
+
+## Current gameplay changes
+
+Sets starting magazines to 16, resupply magazines to 10, maximum magazines to 20, and ergonomics to 40.
+
+## Install
+
+Import the ZIP into Arsenal and enable its option. Keep Bingus Shared Loader at its documented priority, Purge and Deploy, and restart Helldivers 2. Choose the individual packages or the modpack to avoid duplicate addon resources.
+
+Requires Helldivers 2 Steam build 25480438 and Bingus Shared Loader v15 or newer.

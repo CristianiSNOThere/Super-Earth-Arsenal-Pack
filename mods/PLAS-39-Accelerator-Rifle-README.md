@@ -1,18 +1,15 @@
-# PLAS-39 Accelerator Rifle v1.1.5
+# PLAS-39 Accelerator Rifle
 
-Adds two selectable firing modes to the Accelerator Rifle tuning:
+## Current gameplay changes
 
-- **Semi:** one shot with a 0.01-second minimum charge, limited to 200 RPM (0.30 seconds between shots).
-- **Burst:** the original three-shot sequence with a 0.45-second minimum charge.
+Sets magazine capacity to 21, horizontal/vertical drift and camera recoil to 2, horizontal/vertical spread to 0.3, sway to 0.4, stagger to 25, direct-hit and blast armor penetration to 4, and outer blast/shockwave values to 2.5. Offers near-instant Semi fire at 200 RPM and charged three-round Burst with normal firing audio.
 
-With the rifle equipped, hold **R** and use **Weapon Wheel Left** (left-click with the default PC bindings). The selector appears on the left of the weapon menu. The firing behavior follows the selected mode, including a selection remembered by the game, and updates while the menu is open. Custom weapon-menu bindings use the same native selector.
+## Controls and compatibility
 
-## Accelerator Rifle tuning
-
-Magazine capacity 21, recoil 2, spread 0.3, sway 0.4, stagger 25, armor penetration 4, and blast values 2.5.
+Hold R and use Weapon Wheel Left (default: left-click) in the left side of Weapon Functions. Semi fires one round with a 0.01-second minimum charge and 0.30-second spacing. Burst uses a 0.45-second minimum charge and three rounds spaced 0.12 seconds apart. Changes apply as you select and follow the game's remembered mode. Custom bindings use the native selector.
 
 ## Install
 
-Import the ZIP into Arsenal and enable its PLAS-39 option. Keep Bingus Shared Loader v15 or newer at its documented priority, then Purge and Deploy and restart the game. Replace the previous PLAS-39 package with this update.
+Import the ZIP into Arsenal and enable its option. Keep Bingus Shared Loader at its documented priority, Purge and Deploy, and restart Helldivers 2. Choose the individual packages or the modpack to avoid duplicate addon resources.
 
-Targets Helldivers 2 Steam build 25480438 with the matching executable and game-module fingerprints.
+Requires Helldivers 2 Steam build 25480438 and Bingus Shared Loader v15 or newer.
