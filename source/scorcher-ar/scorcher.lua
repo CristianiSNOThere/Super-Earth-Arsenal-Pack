@@ -6,7 +6,7 @@ local ok, why = runtime.register_profile({
     hash = 'EEA5E3CEF1E12C14',
     values = {
         { hash = 'EEA5E3CEF1E12C14', id = 'capacity', value = 50 },
-        { hash = 'EEA5E3CEF1E12C14', id = 'rpm', value = 600 },
+        { hash = 'EEA5E3CEF1E12C14', id = 'rpm', value = 540 },
         { hash = 'EEA5E3CEF1E12C14', id = 'damage', value = 75 },
         { hash = 'EEA5E3CEF1E12C14', id = 'durable', value = 38 },
         { hash = 'EEA5E3CEF1E12C14', id = 'blast_damage', value = 75 },

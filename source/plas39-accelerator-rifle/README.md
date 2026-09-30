@@ -1,0 +1,1 @@
+These sources implement PLAS-39 v1.1.8. implementation.lua is the fully resolved shipped implementation; remaining Lua files are source templates. Builders require the HD2 Mods workspace, extracted entity data, supported native snapshot and game LuaJIT, and are not standalone builds. See native-cache-fix.md for evidence and validation.

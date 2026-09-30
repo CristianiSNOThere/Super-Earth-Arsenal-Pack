@@ -30,7 +30,7 @@ local ok, why = runtime.register_profile({
     hash = 'EEA5E3CEF1E12C14',
     values = {
         { hash = 'EEA5E3CEF1E12C14', id = 'capacity', value = 50 },
-        { hash = 'EEA5E3CEF1E12C14', id = 'rpm', value = 600 },
+        { hash = 'EEA5E3CEF1E12C14', id = 'rpm', value = 540 },
         { hash = 'EEA5E3CEF1E12C14', id = 'damage', value = 75 },
         { hash = 'EEA5E3CEF1E12C14', id = 'durable', value = 38 },
         { hash = 'EEA5E3CEF1E12C14', id = 'blast_damage', value = 75 },
@@ -50,24 +50,25 @@ return runtime
 """
 Lua51().compile(source.encode(),'@scorcher.lua')
 resources[archive.resource_hash(name)]=b.RESOURCE_HEADER.pack(len(source.encode()),2)+source.encode()
-readme='''# PLAS-1 Scorcher AR v1.0.0
+readme='''# PLAS-1 Scorcher AR v1.0.1
 
 ## Current gameplay changes
 
-Increases the magazine from 20 to 50 rounds and fire rate from 350 to 600 RPM. Reduces normal damage from 200 total to 150: 75 impact plus 75 explosion, before armor, hit location and distance falloff. Sets impact durable damage to 38 and explosion durable damage to 75 (113 combined against fully durable targets). Increases the full-damage blast radius from 1 to 1.25 metres and outer blast radius from 2 to 2.5 metres. Starting spare magazines increase from 3 to 4, and maximum spare magazines from 5 to 6; resupply grants 5 magazines. Uses the Scorcher's native Semi and Auto selector. Select Auto in Weapon Functions for continuous fire; at 600 RPM, a 50-round magazine provides approximately five seconds of sustained fire.
+Increases the magazine from 20 to 50 rounds and fire rate from 350 to 540 RPM. Reduces normal damage from 200 total to 150: 75 impact plus 75 explosion, before armor, hit location and distance falloff. Sets impact durable damage to 38 and explosion durable damage to 75 (113 combined against fully durable targets). Increases the full-damage blast radius from 1 to 1.25 metres and outer blast radius from 2 to 2.5 metres. Starting spare magazines increase from 3 to 4, and maximum spare magazines from 5 to 6; resupply grants 5 magazines. Uses the Scorcher's native Semi and Auto selector. Select Auto in Weapon Functions for continuous fire; at 540 RPM, a 50-round magazine provides approximately 5.56 seconds of sustained fire.
 
 ## Install
 
-Import the ZIP into Arsenal and enable PLAS-1 Scorcher AR. Keep Bingus Shared Loader at its documented priority, Purge and Deploy, then restart Helldivers 2. Requires Steam build 25480438 and Bingus Shared Loader v15 or newer. It can be used with Super-Earth Arsenal Modpack v1.0.3, which does not contain Scorcher tuning. Startup uses the same shared runtime and companion initialization guards as the weapon tuning mods. Conflicting edits prevent the settings from applying.
+Import the ZIP into Arsenal and enable PLAS-1 Scorcher AR. Keep Bingus Shared Loader at its documented priority, Purge and Deploy, then restart Helldivers 2. Requires Steam build 25480438 and Bingus Shared Loader v15 or newer. Choose the individual mods or the current modpack to avoid duplicate addon resources. Startup uses the same shared runtime and companion initialization guards as the weapon tuning mods. Conflicting edits prevent the settings from applying.
 '''
 readme=readme.replace('## Install','Reduces horizontal/vertical recoil drift from 20 to 15, horizontal camera recoil from 2 to 1.5, and vertical camera recoil from 20 to 15 (25% less per shot).\n\n## Install')
-manifest={'Version':1,'Guid':str(uuid.uuid5(uuid.UUID('2a1296c8-274d-4f08-a5a3-b241a26a0a30'),'plas1_scorcher_ar')),'Name':'PLAS-1 Scorcher AR v1.0.0','Description':'50 rounds, 600 RPM, 150 total normal damage and increased blast radius. Native Semi/Auto fire. Requires Bingus Shared Loader v15+ and Steam build 25480438.','Options':[{'Name':'Enable PLAS-1 Scorcher AR','Description':'Applies the magazine, rate, damage and blast radius settings listed in the README.','Include':['Addon']}]}
+manifest={'Version':1,'Guid':str(uuid.uuid5(uuid.UUID('2a1296c8-274d-4f08-a5a3-b241a26a0a30'),'plas1_scorcher_ar')),'Name':'PLAS-1 Scorcher AR v1.0.1','Description':'50 rounds, 540 RPM, 150 total normal damage and increased blast radius. Native Semi/Auto fire. Requires Bingus Shared Loader v15+ and Steam build 25480438.','Options':[{'Name':'Enable PLAS-1 Scorcher AR','Description':'Applies the magazine, rate, damage and blast radius settings listed in the README.','Include':['Addon']}]}
+manifest['Description']=' '.join(readme.split('## Current gameplay changes',1)[1].split('## Install',1)[0].split())
 files={'manifest.json':(json.dumps(manifest,indent=2)+'\n').encode(),'README.txt':readme.encode(),'Addon/'+b.ARCHIVE_NAME:archive.make_archive(resources),'Addon/'+b.ARCHIVE_NAME+'.stream':b'','Addon/'+b.ARCHIVE_NAME+'.gpu_resources':b'','Source/scorcher.lua':source.encode(),'Source/runtime.lua':runtime.encode()}
-target=root/'outputs/PLAS-1-Scorcher-AR-v1.0.0.zip';b.write_zip(target,files)
+target=root/'outputs/PLAS-1-Scorcher-AR-v1.0.1.zip';b.write_zip(target,files)
 with zipfile.ZipFile(target) as z:
  assert z.testzip() is None
  assert b.resource_envelopes(z.read('Addon/'+b.ARCHIVE_NAME),target.name)==resources
 (work/'scorcher.lua').write_text(source);(work/'README.md').write_text(readme)
-report={'package':str(target),'sha256':hashlib.sha256(target.read_bytes()).hexdigest().upper(),'stock_capacity':20,'stock_rpm':350,'capacity':50,'rpm':600,'impact_damage':75,'explosion_damage':75,'impact_durable':38,'explosion_durable':75,'inner_radius':1.25,'outer_radius':2.5,'starting_spares':4,'maximum_spares':6,'compilation_and_package_checks':'passed','gameplay_tested':False,'published':False,'settings_modified':False}
+report={'package':str(target),'sha256':hashlib.sha256(target.read_bytes()).hexdigest().upper(),'stock_capacity':20,'stock_rpm':350,'capacity':50,'rpm':540,'impact_damage':75,'explosion_damage':75,'impact_durable':38,'explosion_durable':75,'inner_radius':1.25,'outer_radius':2.5,'starting_spares':4,'maximum_spares':6,'compilation_and_package_checks':'passed','gameplay_tested':False,'published':False,'settings_modified':False}
 report['recoil']={'horizontal_drift':15,'vertical_drift':15,'horizontal_camera':1.5,'vertical_camera':15}
 (work/'validation.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report))
