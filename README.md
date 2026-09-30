@@ -1,6 +1,6 @@
 # Super Earth Arsenal Pack
 
-Six independent core Helldivers 2 mods plus nine additional Preset 1 weapon and sentry mods. Every mod has its own ZIP and can be enabled separately. For the full set in one package, see the [Super-Earth Arsenal Modpack](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Modpack).
+Six independent core Helldivers 2 mods plus nine additional Preset 1 weapon and sentry mods. Every mod has its own ZIP and can be enabled separately. For the full set in one package, see the [Super-Earth Arsenal Modpack](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Modpack). Choose either the individual ZIPs or the modpack ZIP; enabling both duplicates the same add-on resources.
 
 ## Mods
 
