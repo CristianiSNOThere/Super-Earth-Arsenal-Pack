@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "scope": "Offline composition/identity/source/preservation and current-build checks",
+  "baseline_punisher_sha256": "14A367D5A32CC5E3401C2B1A53092B09DE68F971EF309593E02F033A21DAC5E5",
+  "baseline_pack109_sha256": "0A6DE1392D2DEA2E181C1B3FA06A413449543F97515A6704973AFBAFE2807E7D",
+  "existing_pack_resources_preserved": 25,
+  "punisher_resources_added": 3,
+  "duplicate_resource_keys": [],
+  "shared_file_conflicts": [],
+  "source_profile_owner_overlap": [],
+  "pack_profile_owners": [
+    "076DD5D4F4360204",
+    "299C0D3DFD2F0994",
+    "2E9D0BDC48B09E60",
+    "30061F91AF477F5E",
+    "3828E2051AA9E897",
+    "5F3EC9BDA2BD8553",
+    "6CFCC7F8801A0266",
+    "89C5493E08CA4207",
+    "E91F569C2AD8AF01",
+    "EEA5E3CEF1E12C14"
+  ],
+  "punisher_native_safety_and_all_Addon_bytes_exact065": true,
+  "arc_sterilizer_sai_entries_exact_published_latest": true,
+  "protected_scorcher_records_accept_supported_profiles": true,
+  "known_donor_effects": [
+    "Loyalist",
+    "One-Two grenade-launcher attachment"
+  ],
+  "fresh_combined_startup": "NOTRUN",
+  "combined_gameplay": "NOTRUN",
+  "publication_authorized_by_user": true
+}
