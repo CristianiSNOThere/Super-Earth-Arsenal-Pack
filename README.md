@@ -6,6 +6,9 @@
 > **Recovery:** Reinstall the mod or modpack, equip a different primary, close the game completely, then remove it again.
 
 > [!WARNING]
+> **START THE GAME WITH A DIFFERENT PRIMARY WEAPON EQUIPPED.** Punisher Plasma must not already be equipped while this mod initializes. If it is, the safety check stops installation and Punisher remains stock. Equip another primary, close the game completely with the mod still installed, then relaunch. Allow up to two minutes for initialization before equipping Punisher Plasma. Keep the game focused during startup/loading.
+
+> [!WARNING]
 > **DO NOT USE LOYALIST OR ONE-TWO WHILE THIS MOD OR THE MODPACK IS INSTALLED.** Their records and attachment systems have been repurposed for Punisher Plasma. Equipping or using these donor weapons may crash the game.
 
 # Super Earth Arsenal Pack
