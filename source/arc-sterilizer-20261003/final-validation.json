@@ -1,0 +1,87 @@
+{
+  "offline": "PASS",
+  "startup": "NOTRUN",
+  "gameplay": "NOTRUN",
+  "deployment": false,
+  "publication": false,
+  "settings": false,
+  "arc": {
+    "stun_medium_buildup": 1.2
+  },
+  "sterilizer": {
+    "acid_storm_duration": 15,
+    "shared_status": true
+  },
+  "intermediate_packages": [
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\Super-Earth-Arsenal-Modpack-v1.0.9.zip",
+      "sha256": "077B272D584C77EA195FA28936AC01EB3B1D911935991AB52C64C7D8FE2E3960",
+      "changed_resources": [
+        "8BA5FD7BC87570D8",
+        "AE1677AF849B25E2",
+        "E54E34210BAC937E"
+      ],
+      "unchanged_resources": 22
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\ARC-3-Rapid-Arc-Thrower-v0.11.zip",
+      "sha256": "7354794D2B06535F1DAEAFE4E68D3374CEB7DD8ECA5A73D4D8C2F6D231B47DB4",
+      "changed_resources": [
+        "AE1677AF849B25E2"
+      ],
+      "unchanged_resources": 0
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\TX-41-Sterilizer-v0.11.zip",
+      "sha256": "176BCB4F5FB48711F3DBDAB19745A20455DEB6DDA79970C0F5AFCD583467CB16",
+      "changed_resources": [
+        "E54E34210BAC937E"
+      ],
+      "unchanged_resources": 0
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\SAI-Focus-Precision-v0.8.zip",
+      "sha256": "070F08FB3F93B950B5E74E69A5DC5B2F4D427776D48D78CCDEA599FD5F2B62FB",
+      "changed_resources": [
+        "8BA5FD7BC87570D8"
+      ],
+      "unchanged_resources": 0
+    }
+  ],
+  "packages": [
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\Super-Earth-Arsenal-Modpack-v1.0.9-Test.zip",
+      "sha256": "0A6DE1392D2DEA2E181C1B3FA06A413449543F97515A6704973AFBAFE2807E7D",
+      "changed_resources": [
+        "8BA5FD7BC87570D8",
+        "AE1677AF849B25E2",
+        "E54E34210BAC937E"
+      ],
+      "unchanged_resources": 22
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\ARC-3-Rapid-Arc-Thrower-v0.11-Test.zip",
+      "sha256": "DF54B3148E25B195646E82EE3C10376D0F0B7A8D781239C8C93F20196EBAD0C1",
+      "changed_resources": [
+        "AE1677AF849B25E2"
+      ],
+      "unchanged_resources": 0
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\TX-41-Sterilizer-v0.11-Test.zip",
+      "sha256": "3F1DDAF75483C63533D3E947BF3FC3C8EED1A42B2CB84F3E692B557FFA3770FF",
+      "changed_resources": [
+        "E54E34210BAC937E"
+      ],
+      "unchanged_resources": 0
+    },
+    {
+      "file": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\arc-sterilizer-20261003\\SAI-Focus-Precision-v0.8-Test.zip",
+      "sha256": "C540F5308D53642643DAFF7F693115FC588EE70235486FC1AA42828AA266DE70",
+      "changed_resources": [
+        "8BA5FD7BC87570D8"
+      ],
+      "unchanged_resources": 0
+    }
+  ]
+}
