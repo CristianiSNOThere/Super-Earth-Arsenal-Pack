@@ -9,11 +9,11 @@
 
 ## Normal mode
 
-Normal mode fires a single plasma projectile dealing 350 normal and 225 durable explosion damage, with inner/outer/shockwave radii of 3.5/6.5/8 metres and standard burning. Fire rate is 60 RPM, with a 17-round magazine and one spare magazine. Reduced drag and gravity give the projectile a flatter trajectory, while weapon sway is reduced by 50%. Demolition strength is 30, stagger is 25, and push is 30. Each shot consumes one round.
+Stock → modified: explosion damage **225 → 350 normal**, with **225 → 225 durable**; inner/full-damage radius **2.3 → 3.5 m**, outer damage radius **3 → 6.5 m**, and shockwave radius **4 → 8 m**. Standard burning is added to the blast. Fire rate changes **80 → 60 RPM** and magazine capacity **10 → 17 rounds**. Starting spare magazines change **6 → 1**, resupply magazines **8 → 1**, and maximum spare magazines **8 → 1**, without armor bonuses such as Siege Ready. Projectile drag changes **4 → 1.2** and gravity multiplier **3 → 1**, producing a flatter trajectory; sway changes **1 → 0.5** (50% less). Demolition strength changes **10 → 30**, stagger **35 → 25**, and push remains **30 → 30**. It retains one projectile and one round consumed per shot.
 
 ## Shotgun mode
 
-Shotgun mode fires nine explosive plasma pellets per trigger pull at 100 RPM, consuming one round total. Each pellet deals 25 normal/9 durable direct damage plus 25 normal/9 durable explosion damage, with 0.5/0.5/0.5-metre explosion radii and AP3 at all impact angles. Spread is 100 horizontal/90 vertical MRAD, with stagger and push set to 25 each. It uses an independent ammo pool of 20 loaded rounds and 60 loose spares, with a 2x faster native underbarrel reload. Select SHOTGUN through the left-side weapon-function menu; the attachment uses the fitted StA-11 magazine handhold.
+Stock Punisher Plasma has no shotgun attachment or separate shotgun ammunition; this mod adds **SHOTGUN** alongside **NORMAL** in the left-side Weapon Functions selector. The new mode fires **9 explosive plasma pellets at 100 RPM**, consuming **one round total per trigger pull**. Each pellet deals **25 normal/9 durable direct damage plus 25 normal/9 durable explosion damage**: a nominal **450 normal/162 durable** across all nine pellets if every direct hit and full-strength blast connects, before armor, falloff and hit-location effects. Inner/outer/shockwave radii are **0.5/0.5/0.5 m per pellet**, with **AP3 at every impact angle**, **100 horizontal/90 vertical MRAD** spread, and **25 stagger/25 push**. The added independent ammo pool holds **20 loaded rounds plus 60 loose spares**. Its native underbarrel reload runs at **2× the donor reload speed**. The fitted StA-11 magazine replaces the grenade-launcher appearance and provides the support-hand hold, with its cross-section enlarged **10%** while keeping the top mount and length fixed.
 
 ## Controls and compatibility
 
@@ -21,7 +21,7 @@ Hold R to open Weapon Functions and select NORMAL or SHOTGUN using the left-side
 
 Requires Bingus Shared Loader v18 or newer and Helldivers 2 Steam build 25480438. Use the modpack OR the individual packages; installing both duplicates addon resources. Replace previous Punisher test versions, deploy every Addon CPU/GPU/STREAM file and restart. Retained native storage is not safe to hot-unload.
 
-This mod repurposes the Loyalist projectile/explosion/damage profile and the One-Two grenade-launcher attachment. Their original behavior is affected. AR-11 Arbitrator, Scorcher AR and other pack weapons retain their existing settings.
+**Two sacrificed weapons: Loyalist and One-Two.** Loyalist supplies the existing plasma projectile, explosion effects and damage profile used for the shotgun pellets; these donor records are repurposed for the new pellet behavior. One-Two supplies the native grenade-launcher attachment, separate ammunition and underbarrel reload system; its attachment appearance and hand placement are replaced for the fitted magazine grip. Reusing these existing game systems made the plasma shotgun and independent reloadable ammo pool possible. **Both weapons lose their original stock behavior while this mod is installed.** AR-11 Arbitrator, Scorcher AR and other pack weapons retain their existing settings.
 
 Keep the game focused during startup/loading. Switching from Chrome into the game during loading reproduced startup crashes in user testing; the cause is unresolved.
 
