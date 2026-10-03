@@ -5,6 +5,9 @@
 > With the mod still installed, equip a different primary weapon, close Helldivers 2 completely, then remove or replace the package. Removing it while Punisher Plasma is equipped can prevent the game from starting.
 > **Recovery:** Reinstall the mod or modpack, equip a different primary, close the game completely, then remove it again.
 
+> [!WARNING]
+> **DO NOT USE LOYALIST OR ONE-TWO WHILE THIS MOD OR THE MODPACK IS INSTALLED.** Their records and attachment systems have been repurposed for Punisher Plasma. Equipping or using these donor weapons may crash the game.
+
 # Super Earth Arsenal Pack
 
 A collection of 17 Helldivers 2 mods, each available as its own ZIP and option. For the full set in one package, see the [Super-Earth Arsenal Modpack](https://github.com/CristianiSNOThere/Super-Earth-Arsenal-Modpack). Choose either the individual ZIPs or the modpack ZIP; enabling both duplicates the same add-on resources.
