@@ -1,0 +1,42 @@
+{
+  "offline": "PASS",
+  "startup": "NOTRUN",
+  "gameplay": "NOTRUN",
+  "deployment": false,
+  "publication": false,
+  "change": {
+    "damage_types": [
+      29,
+      65,
+      66,
+      67,
+      391,
+      447,
+      448,
+      449
+    ],
+    "status_type": 55,
+    "strength": 1,
+    "duration_seconds": 15
+  },
+  "packages": [
+    {
+      "path": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\gas-overhaul-20261004\\Gas-Overhaul-Test-v0.12.zip",
+      "sha256": "125697F948CD87C77481E636603C5516C06B0A38C0477C6AFE40AD6E593CD9F9",
+      "baseline_sha256": "FC1CF3A7AC3C9310FC015A250C6B919869BCC5242EA6022AA461531ECEF123F9",
+      "changed_runtime_resources": [
+        "e54e34210bac937e"
+      ],
+      "unchanged_runtime_resources": 0
+    },
+    {
+      "path": "C:\\Users\\crife\\Desktop\\HD2 Mods\\outputs\\gas-overhaul-20261004\\Super-Earth-Arsenal-Modpack-Gas-Overhaul-Test-v1.0.11.zip",
+      "sha256": "E8CD4FA7CE921F208DA1D80380EE4E1F5B76B36C8225A351F7131522BCC5F425",
+      "baseline_sha256": "FCD7D47FF1D0D60844A18F0C86A0F614E9423612273A13F44F9275398FBE8BF2",
+      "changed_runtime_resources": [
+        "e54e34210bac937e"
+      ],
+      "unchanged_runtime_resources": 27
+    }
+  ]
+}
