@@ -1,4 +1,4 @@
-# PLAS-1 Scorcher AR v1.0.1
+# PLAS-1 Scorcher AR v1.0.2
 
 ## Current gameplay changes
 

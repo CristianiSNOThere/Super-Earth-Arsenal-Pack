@@ -1,4 +1,4 @@
-# PLAS-39 Accelerator Rifle v1.1.8
+# PLAS-39 Accelerator Rifle v1.1.9
 
 ## Current gameplay changes
 

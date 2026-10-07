@@ -264,10 +264,36 @@ local function identify(api, address)
     if u32(s,92) ~= COUNT or u32(s,96) ~= 0 then return nil,'row count mismatch' end
     local ptr = api.pointer(s,84)
     if not ptr or api.distance(ptr,address) ~= 100 then return nil,'relocated pointer mismatch: '..tostring(ptr and api.distance(ptr,address)) end
-    -- Accept only the exact companion SAI v0.1 edit; hash every other byte.
+    -- Normalize only recognized current companion edits; hash every other byte.
     local normalized=s
     if u32(s,4208)==90 and u32(s,4212)==21 then
-        normalized=set(s,4208,pack32(80)..pack32(4))
+        normalized=set(normalized,4208,pack32(80)..pack32(4))
+    end
+    local ar11=rawget(_G,'AR11ArbitratorModV1')
+    if ar11 and ar11.active then
+        local expected='Applied: AR-11 rifle damage 70 -> 80; rifle magazine 45 -> 65; underbarrel magazine remains 4 and reserve ammo 20 -> 30; stagger 20 -> 25 with push force 20 unchanged; ergonomics 29 -> 40 with the default optic.'
+        if ar11.version~='0.2' or ar11.status~=expected
+          or u32(s,10592)~=80 or u32(s,12672)~=25 then
+            return nil,'unsupported AR-11 companion result'
+        end
+        normalized=set(normalized,10592,pack32(70))
+        normalized=set(normalized,12672,pack32(20))
+    end
+    local arc=rawget(_G,'RapidArcThrowerV1')
+    if arc and arc.active then
+        local normal,durable,buildup
+        if arc.version=='0.11' and arc.status=='Applied: ARC-3 range 55 -> 45 m; charge 1.0/1.1/1.2 -> 0.307692/0.338462/0.369231 s; damage 250/100 -> 226/90; Stun Medium buildup 8 -> 1.2; demolition/force strength/impulse 20/35/10 -> 4/25/2; camera climb 1.0/1.0 -> 0.4/0.4.' then
+            normal,durable,buildup=226,90,'9a99993f'
+        else return nil,'unsupported ARC-3 companion result' end
+        if u32(s,15072)~=197 or u32(s,15116)~=37
+          or u32(s,15076)~=normal or u32(s,15080)~=durable
+          or u32(s,15100)~=4 or u32(s,15104)~=25 or u32(s,15108)~=2
+          or s:sub(15121,15124)~=(buildup:gsub('..',function(h)return string.char(tonumber(h,16))end)) then
+            return nil,'ARC-3 companion values mismatch'
+        end
+        normalized=set(normalized,15076,pack32(250)..pack32(100))
+        normalized=set(normalized,15100,pack32(20)..pack32(35)..pack32(10))
+        normalized=set(normalized,15120,string.char(0,0,0,65))
     end
     local hash=api.sha256(normalized:sub(101))
     if hash ~= TABLE_SHA then return nil,'rows hash mismatch: '..hash end
@@ -379,8 +405,13 @@ return function(make_api,patch)
                 wait_for_loading(attempt==1 and 15000 or 10000,attempt)
                 local applied,reason=patch.apply(api,game)
                 if applied then return reason end
-                if not reason:find('found 0. No edit applied.',1,true) or attempt==6 then error(reason) end
-                state.status='Damage table not ready; retrying after loading'
+                local not_ready=reason:find('found 0. No edit applied.',1,true)~=nil
+                local stale=reason:find('Damage data changed before edit. No edit applied.',1,true)~=nil
+                local restored=reason:find('Full damage-table verification failed',1,true)~=nil
+                    and reason:find('restored=true',1,true)~=nil
+                if (not not_ready and not stale and not restored) or attempt==6 then error(reason) end
+                state.status=(stale or restored) and 'Shared damage table changed during Flag setup; retrying safely'
+                    or 'Damage table not ready; retrying after loading'
                 log()
             end
     end)

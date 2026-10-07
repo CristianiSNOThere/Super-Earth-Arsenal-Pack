@@ -2115,7 +2115,7 @@ local function become_ready(final)
     end
     progress = { next = 1 }
     EXT.preset_peer_ready_at = api.now() + 30
-    EXT.preset_peer_deadline = nil
+    EXT.preset_peer_deadline = EXT.preset_peer_ready_at + 120
     EXT.extended_views_ready = false
     pending, apply_at = {}, 1
     local ids = {}
@@ -2159,6 +2159,11 @@ local function prepare(deadline)
     if api.now() < (EXT.preset_peer_check_at or 0) then return end
     local peers_ready, peer_reason = EXT.preset_peers_ready()
     if not peers_ready then
+        if api.now() >= (EXT.preset_peer_deadline or 0) then
+            pending = {}
+            set_status('gave_up', 'installed companion did not become ready within 120 seconds: ' .. tostring(peer_reason) .. '; no Scorcher values applied')
+            return
+        end
         EXT.preset_peer_check_at = api.now() + 1
         local message = 'waiting for installed mod: ' .. tostring(peer_reason)
         if state.status ~= message then set_status('preparing', message) end

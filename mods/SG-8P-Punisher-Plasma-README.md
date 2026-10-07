@@ -11,7 +11,7 @@
 > [!WARNING]
 > **DO NOT USE LOYALIST OR ONE-TWO WHILE THIS MOD OR THE MODPACK IS INSTALLED.** Their records and attachment systems have been repurposed for Punisher Plasma. Equipping or using these donor weapons may crash the game.
 
-# SG-8P Punisher Plasma v1.0.0
+# SG-8P Punisher Plasma v1.0.1
 
 ## Normal mode
 

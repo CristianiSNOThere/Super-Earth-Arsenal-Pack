@@ -1,4 +1,4 @@
-# ARC-3 Rapid Arc Thrower v0.11
+# ARC-3 Rapid Arc Thrower v0.12
 
 Sets minimum/full/overcharge times to 0.307692/0.338462/0.369231 seconds, primary reach to 45 m, and normal/durable damage per pulse to 226/90. Sets Stun Medium buildup to 1.2, demolition strength to 4, hit reaction force strength to 25, impulse to 2, and horizontal/vertical camera climb multipliers to 0.4. Armor penetration remains 7; chaining and charge damage multipliers retain their native behavior.
 
@@ -8,6 +8,6 @@ Enable Arc Thrower Revamped in CowboyBingus's Vanilla Plus Megapack for hold-to-
 
 Replace the previous individual package in Arsenal, Purge/Deploy, and restart Helldivers 2. Use the individual packages or the modpack to avoid duplicate addon resources.
 
-Version 0.11 increases Stun Medium buildup from 0.8 to 1.2. Install the matching Sterilizer v0.11 and SAI v0.8 updates when using those mods alongside it.
+Version 0.12 retains Stun Medium buildup at 1.2. Use Gas Overhaul v0.13 and SAI Focus Precision v0.9 when enabling those mods alongside it.
 
 Validation: packaged LuaJIT scope, conflict, compatibility and rollback checks passed offline. Fresh startup and gameplay checks for this update remain pending.
