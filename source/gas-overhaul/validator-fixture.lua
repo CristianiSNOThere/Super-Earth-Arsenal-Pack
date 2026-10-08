@@ -428,6 +428,18 @@ local function validate_damage(api,address)
         normalized=replace(normalized,ARC_DAMAGE_OFFSET+48,unhex('00000041'))
     end
 
+    -- ARC-3 Supercharge uses one dedicated, weapon-owned damage row. Accept only
+    -- its exact released payload when the recognized ARC companion is Applied.
+    local donor547=unhex('23020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+    local super547=unhex('230200000e0600000e06000007000000070000000700000000000000040000001900000002000000020000002500000000004041270000000000c84100000000000000000000000000000000')
+    local row547=s:sub(41217,41292)
+    if row547==super547 then
+        if not arc_normal then return nil,'ARC-3 Supercharge row without Applied companion' end
+        normalized=replace(normalized,41216,donor547)
+    elseif row547~=donor547 then
+        return nil,'ARC-3 Supercharge row mismatch'
+    end
+
     if api.sha256(normalized:sub(101))~=DAMAGE_SHA then return nil,'damage rows checksum mismatch' end
     local desired_statuses=unhex('2b0000000000403f2d0000000000403f370000000000803f0000000000000000')
     return {address=address,size=DAMAGE_SIZE,source=s,writes={
@@ -598,7 +610,7 @@ local function case(version,status,n,d,reject,offset,extra)
         ffi.cast('float *',p+15120)[0]=(version=='0.11' and status==status11) and 1.2 or 0.8
     end
     if offset then p[offset]=bit.bxor(p[offset],1) end
-    if extra then extra(put) end
+    if extra then extra(put,p) end
     local before=api.read(p,#original)
     local ok,result,reason=pcall(validate,api,p)
     assert((ok and result~=nil)==not reject,tostring(version)..': '..tostring(result)..' '..tostring(reason))
@@ -653,3 +665,24 @@ case(nil,nil,nil,nil,true,33464)
 case(nil,nil,nil,nil,true,33540)
 
 case(nil,nil,nil,nil,true,33616)
+
+local function rowhex(s) return (s:gsub('..',function(h) return string.char(tonumber(h,16)) end)) end
+case('0.11',status11,226,90,false,nil,function(put,p)
+    ffi.copy(p+41216,rowhex('230200000e0600000e06000007000000070000000700000000000000040000001900000002000000020000002500000000004041270000000000c84100000000000000000000000000000000'),76)
+end)
+case('0.11',status11,226,90,true,nil,function(put,p)
+    ffi.copy(p+41216,rowhex('230200000e0600000e06000007000000070000000700000000000000040000001900000002000000020000002500000000004041270000000000c84100000000000000000000000000000000'),76)
+    p[41225]=bit.bxor(p[41225],1)
+end)
+case(nil,nil,nil,nil,true,nil,function(put,p)
+    ffi.copy(p+41216,rowhex('230200000e0600000e06000007000000070000000700000000000000040000001900000002000000020000002500000000004041270000000000c84100000000000000000000000000000000'),76)
+end)
+case('0.11',status11,226,90,false,nil,function(put,p)
+    ffi.copy(p+41216,rowhex('230200000e0600000e06000007000000070000000700000000000000040000001900000002000000020000002500000000004041270000000000c84100000000000000000000000000000000'),76)
+    _G.FlagDamagePrototypeV1={active=true,status='Applied: flag damage 200 -> 300; durable damage 100 -> 150.'}
+    put(41980,300);put(41984,150)
+    _G.AR11ArbitratorModV1={active=true,version='0.2',status='Applied: AR-11 rifle damage 70 -> 80; rifle magazine 45 -> 65; underbarrel magazine remains 4 and reserve ammo 20 -> 30; stagger 20 -> 25 with push force 20 unchanged; ergonomics 29 -> 40 with the default optic.'}
+    put(10592,80);put(12672,25)
+    _G.SaiFocusModV1={active=true,status='Applied: SAI normal damage 80 -> 90; durable damage 4 -> 21; Focus Lens spread 75 -> 0.5 MRAD on both axes.'}
+    put(4208,90);put(4212,21)
+end)

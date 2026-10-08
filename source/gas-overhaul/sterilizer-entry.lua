@@ -481,6 +481,18 @@ local function validate_damage(api,address)
         normalized=replace(normalized,ARC_DAMAGE_OFFSET+48,unhex('00000041'))
     end
 
+    -- ARC-3 Supercharge uses one dedicated, weapon-owned damage row. Accept only
+    -- its exact released payload when the recognized ARC companion is Applied.
+    local donor547=unhex('23020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+    local super547=unhex('230200000e0600000e06000007000000070000000700000000000000040000001900000002000000020000002500000000004041270000000000c84100000000000000000000000000000000')
+    local row547=s:sub(41217,41292)
+    if row547==super547 then
+        if not arc_normal then return nil,'ARC-3 Supercharge row without Applied companion' end
+        normalized=replace(normalized,41216,donor547)
+    elseif row547~=donor547 then
+        return nil,'ARC-3 Supercharge row mismatch'
+    end
+
     if api.sha256(normalized:sub(101))~=DAMAGE_SHA then return nil,'damage rows checksum mismatch' end
     local desired_statuses=unhex('2b0000000000403f2d0000000000403f370000000000803f0000000000000000')
     return {address=address,size=DAMAGE_SIZE,source=s,writes={
